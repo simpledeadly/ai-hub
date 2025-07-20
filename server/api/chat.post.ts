@@ -1,8 +1,9 @@
+import type { ServerResponse } from '~/middlewares/types/types'
+
 export default defineEventHandler(async (event) => {
-  // 1. Получаем сообщение, которое ввел пользователь в чате
   const body = await readBody(event)
   const userMessage = body.message as string
-  const agentUrl = body.agentUrl || process.env.N8N_CHAT_AGENT_URL
+  const agentUrl = body.agentUrl as string
 
   if (!userMessage) {
     throw createError({
@@ -21,18 +22,14 @@ export default defineEventHandler(async (event) => {
   console.log(`Отправляем промпт в n8n (${agentUrl}): "${userMessage}"`)
 
   try {
-    // 3. Отправляем промпт пользователя в n8n и ждем ответа.
-    // n8n должен вернуть JSON в формате { reply: "...", sources: [...] }
-    const agentResponse = await $fetch<{ reply: string; sources?: string[] }>(agentUrl, {
+    const agentResponse = await $fetch<ServerResponse>(agentUrl, {
       method: 'POST',
-      // В тело запроса кладем сообщение пользователя
       body: {
         prompt: userMessage,
       },
     })
 
-    // 4. Возвращаем ответ от n8n обратно в наш чат на фронтенде
-    return agentResponse // agentResponse уже имеет вид { reply: "...", sources: [...] }
+    return agentResponse
   } catch (error) {
     console.error('Ошибка при общении с агентом в n8n:', error)
     throw createError({

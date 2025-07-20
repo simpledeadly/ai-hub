@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import ChatMessage from '@/components/ChatMessage.vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import type { ServerResponse } from '~/middlewares/types/types'
+import { Send } from 'lucide-vue-next'
 
-// Тип сообщения
-interface Message {
+type Message = {
   id: number
   role: 'user' | 'agent'
   content: string
@@ -23,7 +24,7 @@ const messages = ref<Message[]>([
 const userInput = ref('')
 const isLoading = ref(false)
 
-async function sendMessage() {
+const sendMessage = async () => {
   if (!userInput.value.trim() || isLoading.value) return
 
   messages.value.push({
@@ -37,12 +38,11 @@ async function sendMessage() {
   isLoading.value = true
 
   try {
-    // Получаем URL из localStorage
     const agentUrl = localStorage.getItem('api-url') || ''
 
-    const response = await $fetch('/api/chat', {
+    const response = await $fetch<ServerResponse>('/api/chat', {
       method: 'POST',
-      body: { message: userMessage, agentUrl }, // <--- добавили agentUrl
+      body: { message: userMessage, agentUrl },
     })
 
     messages.value.push({
@@ -62,10 +62,6 @@ async function sendMessage() {
     isLoading.value = false
   }
 }
-
-const lastAgentMessage = computed(() => {
-  return [...messages.value].reverse().find((m) => m.role === 'agent')
-})
 </script>
 
 <template>
@@ -126,30 +122,11 @@ const lastAgentMessage = computed(() => {
         />
         <Button
           type="submit"
-          :disabled="isLoading"
+          size="icon"
           class="shrink-0"
+          :disabled="isLoading"
         >
-          <svg
-            v-if="!isLoading"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <line
-              x1="22"
-              y1="2"
-              x2="11"
-              y2="13"
-            />
-            <polygon points="22,2 15,22 11,13 2,9" />
-          </svg>
-          <span
-            v-else
-            class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"
-          ></span>
+          <Send />
         </Button>
       </form>
     </footer>
