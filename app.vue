@@ -1,17 +1,19 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { Settings } from 'lucide-vue-next'
-import Button from '@/components/ui/button/Button.vue'
-import Dialog from '@/components/ui/dialog/Dialog.vue'
-import DialogTrigger from '@/components/ui/dialog/DialogTrigger.vue'
-import DialogContent from '@/components/ui/dialog/DialogContent.vue'
-import DialogHeader from '@/components/ui/dialog/DialogHeader.vue'
-import DialogTitle from '@/components/ui/dialog/DialogTitle.vue'
-import DialogDescription from '@/components/ui/dialog/DialogDescription.vue'
-import DialogFooter from '@/components/ui/dialog/DialogFooter.vue'
-import DialogClose from '@/components/ui/dialog/DialogClose.vue'
-import Input from '@/components/ui/input/Input.vue'
-import Label from '@/components/ui/label/Label.vue'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogTrigger,
+  DialogTitle,
+  DialogDescription,
+  DialogHeader,
+  DialogContent,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 const settingsOpen = ref(false)
 const url = ref('')
@@ -20,7 +22,7 @@ onMounted(() => {
   url.value = localStorage.getItem('api-url') || ''
 })
 
-function saveUrl() {
+const saveUrl = () => {
   localStorage.setItem('api-url', url.value)
   settingsOpen.value = false
 }
@@ -33,12 +35,10 @@ function saveUrl() {
       <Dialog v-model:open="settingsOpen">
         <DialogTrigger as-child>
           <Button
-            variant="outline"
             size="icon"
-            aria-label="Открыть настройки"
+            class="cursor-pointer"
           >
             <Settings class="w-5 h-5 mr-1" />
-            <span class="hidden sm:inline">Настройки</span>
           </Button>
         </DialogTrigger>
         <DialogContent class="max-w-md w-full">
