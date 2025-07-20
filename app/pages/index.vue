@@ -93,6 +93,7 @@ const saveUrl = () => {
           id="api-url"
           v-model="url"
           placeholder="https://example.com/api"
+          class="w-100"
         />
       </template>
 
