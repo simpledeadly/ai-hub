@@ -65,65 +65,49 @@ const sendMessage = async () => {
 </script>
 
 <template>
-  <div class="flex flex-col h-screen bg-background">
+  <div>
     <!-- Header -->
-    <header class="border-b bg-card/80 backdrop-blur px-4 py-6">
-      <div class="flex flex-col items-center gap-2">
-        <div class="flex items-center gap-2">
-          <span class="text-3xl">🤖</span>
-          <h1
-            class="text-2xl font-bold bg-gradient-to-br from-indigo-400 to-purple-500 bg-clip-text text-transparent"
-          >
-            AI Hub
-          </h1>
+    <header>
+      <div>
+        <div>
+          <span>🤖</span>
+          <h1>AI Hub</h1>
         </div>
-        <span class="text-muted-foreground text-sm">Интеллектуальный помощник для разработки</span>
+        <p>Интеллектуальный помощник для разработки</p>
       </div>
     </header>
 
     <!-- Messages -->
-    <main class="flex-1 overflow-y-auto px-4 py-6 space-y-4">
-      <div
-        v-for="message in messages"
-        :key="message.id"
-      >
-        <ChatMessage :message="message" />
-      </div>
-      <div
-        v-if="isLoading"
-        class="flex items-center gap-2 px-4 py-2 bg-card rounded-lg border w-fit mx-auto"
-      >
-        <span class="flex gap-1">
-          <span
-            class="w-2 h-2 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 animate-pulse"
-          ></span>
-          <span
-            class="w-2 h-2 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 animate-pulse delay-150"
-          ></span>
-          <span
-            class="w-2 h-2 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 animate-pulse delay-300"
-          ></span>
-        </span>
-        <span class="text-muted-foreground text-sm">Агент думает...</span>
+    <main class="messages">
+      <div class="messages-container">
+        <div
+          v-for="message in messages"
+          :key="message.id"
+        >
+          <ChatMessage :message="message" />
+          <div class="flex items-center space-x-2">
+            <Checkbox />
+          </div>
+        </div>
+
+        <!-- Loading indicator -->
+        <div v-if="isLoading">
+          <span class="loading-text">Агент думает...</span>
+        </div>
       </div>
     </main>
 
     <!-- Input Area -->
-    <footer class="border-t bg-card/80 backdrop-blur px-4 py-4">
-      <form
-        @submit.prevent="sendMessage"
-        class="flex gap-2"
-      >
+    <footer>
+      <form @submit.prevent="sendMessage">
         <Input
           v-model="userInput"
           :disabled="isLoading"
           placeholder="Спросите что-нибудь у агента..."
-          class="flex-1"
         />
         <Button
           type="submit"
           size="icon"
-          class="shrink-0"
           :disabled="isLoading"
         >
           <Send />
@@ -132,3 +116,7 @@ const sendMessage = async () => {
     </footer>
   </div>
 </template>
+
+<style lang="scss">
+/** keep */
+</style>

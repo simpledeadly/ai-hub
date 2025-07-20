@@ -29,25 +29,22 @@ const saveUrl = () => {
 </script>
 
 <template>
-  <div class="app-container">
+  <div>
     <!-- Кнопка настроек -->
-    <div style="position: absolute; top: 24px; right: 32px; z-index: 50">
+    <div>
       <Dialog v-model:open="settingsOpen">
         <DialogTrigger as-child>
-          <Button
-            size="icon"
-            class="cursor-pointer"
-          >
-            <Settings class="w-5 h-5 mr-1" />
+          <Button size="icon">
+            <Settings />
           </Button>
         </DialogTrigger>
-        <DialogContent class="max-w-md w-full">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Настройки</DialogTitle>
             <DialogDescription>Укажите URL-адрес для отправки запросов</DialogDescription>
           </DialogHeader>
           <form @submit.prevent="saveUrl">
-            <div class="space-y-2 py-4">
+            <div>
               <Label for="api-url">URL-адрес</Label>
               <Input
                 id="api-url"
@@ -59,17 +56,21 @@ const saveUrl = () => {
               <Button type="submit">Сохранить</Button>
               <DialogClose as-child>
                 <Button
-                  variant="ghost"
+                  variant="destructive"
                   type="button"
-                  >Отмена</Button
                 >
+                  Отмена
+                </Button>
               </DialogClose>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
     </div>
-    <!-- Сюда Nuxt будет рендерить страницы из папки /pages -->
     <NuxtPage />
   </div>
 </template>
+
+<style lang="scss">
+/** keep */
+</style>
