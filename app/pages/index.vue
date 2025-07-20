@@ -73,83 +73,140 @@ const getUrlFromLS = () => {
 const saveUrl = () => {
   localStorage.setItem('api-url', url.value)
 }
+
+const methods = ['GET', 'POST', 'PUT', 'DELETE']
+const method = ref(methods[1])
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center gap-4 h-screen">
-    <UModal
-      title="Настройки"
-      close-icon="i-lucide-x"
-    >
-      <UButton
-        icon="i-lucide-settings"
-        color="neutral"
-        variant="subtle"
-        @click="getUrlFromLS"
-      />
-      <template #body>
-        <ULabel for="api-url">URL-вебхука</ULabel>
-        <UInput
-          id="api-url"
-          v-model="url"
-          placeholder="https://example.com/api"
-          class="w-100"
-        />
-      </template>
-
-      <template #footer="{ close }">
-        <UButton
-          label="Отмена"
-          color="neutral"
-          variant="outline"
-          @click="close"
-        />
-        <UButton
-          label="Сохранить"
-          color="neutral"
-          @click="
-            () => {
-              saveUrl(), close()
-            }
-          "
-        />
-      </template>
-    </UModal>
-
-    <h1 class="font-bold text-2xl">Send mesage to Agent</h1>
-
-    <div
-      v-for="message in messages"
-      :key="message.id"
-    >
-      <ChatMessage :message="message" />
-    </div>
-
-    <!-- Loading indicator -->
-    <div v-if="isLoading">
-      <span class="loading-text">Агент думает...</span>
-    </div>
-
-    <div class="flex items-center gap-2">
-      <form
-        class="flex"
-        @submit.prevent="sendMessage"
+  <div class="app-container">
+    <div class="chat-wrapper">
+      <div
+        class="chat-messages"
+        ref="chatMessages"
       >
-        <UInput
-          v-model="userInput"
-          :disabled="isLoading"
-          placeholder="Спросите что-нибудь у агента..."
-        />
-        <UButton
-          color="neutral"
-          icon="i-lucide-send"
-          @click="sendMessage"
-        />
-      </form>
+        <div
+          v-for="message in messages"
+          :key="message.id"
+          class="chat-message-row"
+        >
+          <ChatMessage :message="message" />
+        </div>
+        <div v-if="isLoading">
+          <span class="loading-text">Агент думает...</span>
+        </div>
+      </div>
+      <div class="chat-input-bar">
+        <form
+          class="flex items-center gap-2 w-full"
+          @submit.prevent="sendMessage"
+        >
+          <UButtonGroup class="w-full">
+            <UModal
+              title="Настройки запроса"
+              close-icon="i-lucide-x"
+            >
+              <UButton
+                icon="i-lucide-settings"
+                color="neutral"
+                variant="subtle"
+                @click="getUrlFromLS"
+              />
+              <template #body>
+                <UButtonGroup class="mt-1">
+                  <USelectMenu
+                    v-model="method"
+                    :items="methods"
+                  />
+                  <UInput
+                    v-model="url"
+                    class="w-75"
+                    placeholder="Webhook url here"
+                  >
+                  </UInput>
+                  <UButton
+                    color="neutral"
+                    variant="outline"
+                    icon="i-lucide-x"
+                    @click="getUrlFromLS"
+                  />
+                  <UButton
+                    color="neutral"
+                    variant="subtle"
+                    icon="i-lucide-save"
+                    @click="saveUrl"
+                  />
+                </UButtonGroup>
+              </template>
+              <template #footer="{ close }">
+                <UButton
+                  label="Отмена"
+                  color="neutral"
+                  variant="outline"
+                  @click="close"
+                />
+                <UButton
+                  label="Сохранить"
+                  color="neutral"
+                  @click="
+                    () => {
+                      saveUrl(), close()
+                    }
+                  "
+                />
+              </template>
+            </UModal>
+            <UInput
+              v-model="userInput"
+              :disabled="isLoading"
+              class="flex-1"
+              placeholder="Спросите что-нибудь у агента..."
+            />
+            <UButton
+              variant="subtle"
+              color="neutral"
+              icon="i-lucide-send"
+              @click="sendMessage"
+            />
+          </UButtonGroup>
+        </form>
+      </div>
     </div>
   </div>
 </template>
 
 <style lang="scss">
-/** keep */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  max-width: 1024px;
+}
+
+.chat-messages {
+  flex: 1 1 0%;
+  overflow-y: auto;
+  padding: 2rem 1.5rem 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-message-row {
+  width: 100%;
+}
+
+.chat-input-bar {
+  padding: 1rem 1.5rem;
+  width: 100%;
+}
 </style>
