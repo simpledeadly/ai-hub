@@ -60,46 +60,58 @@ const sendMessage = async () => {
   }
 }
 
-const settingsOpen = ref(false)
 const url = ref('')
 
 onMounted(() => {
   url.value = localStorage.getItem('api-url') || ''
 })
 
+const getUrlFromLS = () => {
+  url.value = localStorage.getItem('api-url') || ''
+}
+
 const saveUrl = () => {
   localStorage.setItem('api-url', url.value)
-  settingsOpen.value = false
 }
 </script>
 
 <template>
   <div class="flex flex-col items-center justify-center gap-4 h-screen">
     <UModal
-      title="Settings"
+      title="Настройки"
       close-icon="i-lucide-x"
     >
       <UButton
-        label="Open"
+        icon="i-lucide-settings"
         color="neutral"
         variant="subtle"
+        @click="getUrlFromLS"
       />
       <template #body>
-        <form @submit.prevent="saveUrl">
-          <div>
-            <ULabel for="api-url">URL-адрес</ULabel>
-            <UInput
-              id="api-url"
-              v-model="url"
-              placeholder="https://example.com/api"
-            />
-          </div>
-          <UButton
-            type="submit"
-            >Сохранить</UButton
-          >
-          <UButton> Отмена </UButton>
-        </form>
+        <ULabel for="api-url">URL-вебхука</ULabel>
+        <UInput
+          id="api-url"
+          v-model="url"
+          placeholder="https://example.com/api"
+        />
+      </template>
+
+      <template #footer="{ close }">
+        <UButton
+          label="Отмена"
+          color="neutral"
+          variant="outline"
+          @click="close"
+        />
+        <UButton
+          label="Сохранить"
+          color="neutral"
+          @click="
+            () => {
+              saveUrl(), close()
+            }
+          "
+        />
       </template>
     </UModal>
 
